@@ -1,4 +1,4 @@
-myApp.controller('mapController', ['$scope', 'mapService', function($scope, MapService){
+myApp.controller('mapController', ['$scope', 'mapService', '$http', function($scope, MapService, $http){
     
     $scope.geocercas = [];
     $scope.geocercasDibujadas = [];
@@ -15,19 +15,31 @@ myApp.controller('mapController', ['$scope', 'mapService', function($scope, MapS
     }).addTo(map);
     
     $scope.obtenerGeocercas = async () => {
-        MapService.getGeocercas(1, 5).then((response) => {
-            $scope.geocercas = response.data.resultado;
+        $http.defaults.headers.common.Authorization = 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJnaWxkYXJkby5vcnRpekBzZWd1cml0ZWNoLmNvbSIsInJvbGVzIjpbIlNVUEVSX0FETUlOIl0sImlzcyI6Imh0dHBzOi8vc2RjLXNlY3VyaXR5L3NlY3VyaXR5L3YxL2xvZ2luIiwiZXhwIjoxNjczMzc3MjU5LCJ1c2VySWQiOiI3ZDIwMTNhNC03MGM4LTQ0ZGQtYTQ4ZS00NmVlZDJkMGZmOTcifQ.XUCoDRPJO3nd_6q8vs1WstUKASHDlI_RutXdfONhLKU';
+        MapService.getGeocercas().then((response) => {
+            $scope.geocercas = response.data.result;
         });
     }
 
     $scope.print = (item) => {
         let geocerca = [];
-        item.poligono.split('/').map((coords) => {
-            let temp = coords.split(",");
-            geocerca.push(new Array(parseFloat(temp[0]), parseFloat(temp[1])));
-        });
-        geocerca.splice(-1);
-        L.polygon(geocerca).addTo(map);
+        if(item.polygon.points.length > 0) {
+            item.polygon.points.map((coords) => {
+                geocerca.push(new Array(parseFloat(coords[0]), parseFloat(coords[1])));
+            });
+            L.polygon(geocerca).addTo(map); 
+        } else {
+            let points = item.polygon.center.map((coords) => {
+                return new Array(parseFloat(coords[0]), parseFloat(coords[1]));
+            });
+            
+             L.circle([parseFloat(item.polygon.center[0]), parseFloat(item.polygon.center[1])], {
+                color: "red",
+                fillColor: "#f03",
+                fillOpacity: 0.5,
+                radius: parseFloat(item.polygon.radio)
+            }).addTo(map);
+        }
         
     }
 
@@ -47,4 +59,3 @@ myApp.controller('mapController', ['$scope', 'mapService', function($scope, MapS
     
     $scope.obtenerGeocercas();
 }]);
-
