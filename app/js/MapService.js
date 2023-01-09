@@ -1,7 +1,7 @@
 myApp.factory('mapService', ['$http', function($http){
     return {
-        getGeocercas: (page, size) => {
-            return $http.get('http://localhost:8584/gasolinago/api/geocerca/find-all?page=' + page + "&size=" + size).then( response => {
+        getGeocercas: () => {
+            return $http.get('http://localhost:8093/emergency/v1/geoFence/findAll').then( response => {
                 return response;
             });
         }
