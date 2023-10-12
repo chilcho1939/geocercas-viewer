@@ -5,7 +5,7 @@ myApp.controller('mapController', ['$scope', 'mapService', '$http', function($sc
     
     var map = L.map('map').setView([21.900372, -102.296947], 5);
     
-    L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiY2hpbGNobyIsImEiOiJjamg2bXVlNDExYTg3MnFvMzhvejY1ZHB1In0.Y43ccl6i31YmkwQ0c906Xg', {
+    L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiY2hpbGNobyIsImEiOiJjbG5tNHBvdzIyNGlzMmxta2plNWYwMXhwIn0.prQ7GRQ9Bg6M7LEYMRPqUA', {
         attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
         maxZoom: 18,
         id: 'mapbox/streets-v11',
@@ -15,7 +15,7 @@ myApp.controller('mapController', ['$scope', 'mapService', '$http', function($sc
     }).addTo(map);
     
     $scope.obtenerGeocercas = async () => {
-        $http.defaults.headers.common.Authorization = 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJnaWxkYXJkby5vcnRpekBzZWd1cml0ZWNoLmNvbSIsInJvbGVzIjpbIlNVUEVSX0FETUlOIl0sImlzcyI6Imh0dHBzOi8vc2RjLXNlY3VyaXR5L3NlY3VyaXR5L3YxL2xvZ2luIiwiZXhwIjoxNjY1ODcyMDY5LCJ1c2VySWQiOiI3ZDIwMTNhNC03MGM4LTQ0ZGQtYTQ4ZS00NmVlZDJkMGZmOTcifQ.iuntx2auTQzGdELagQLxPRsYoxMNZ0qGmd62Eyp-vfc';
+        $http.defaults.headers.common.Authorization = 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJnaWxkYXJkby5vcnRpekBzZWd1cml0ZWNoLmNvbSIsInJvbGVzIjpbIlNVUEVSX0FETUlOIl0sImlzcyI6Imh0dHBzOi8vc2RjLXNlY3VyaXR5L3NlY3VyaXR5L3YxL2xvZ2luIiwiZXhwIjoxNjk3MDU0OTAxLCJ1c2VySWQiOiI1YjRiNDgzNi1kZjAxLTQxNTMtOTdiMi0zY2U4NmQyMzIxNjkifQ.TkHsdNRPxBX6zNfQgjAxP3hqVqnTNpHOnYjCTo0mcfM';
         MapService.getGeocercas().then((response) => {
             $scope.geocercas = response.data.result;
         });
@@ -25,12 +25,12 @@ myApp.controller('mapController', ['$scope', 'mapService', '$http', function($sc
         let geocerca = [];
         if(item.polygon.points.length > 0) {
             item.polygon.points.map((coords) => {
-                geocerca.push(new Array(parseFloat(coords[1]), parseFloat(coords[0])));
+                geocerca.push(new Array(parseFloat(coords[0]), parseFloat(coords[1])));
             });
             L.polygon(geocerca).addTo(map); 
         } else {
             let points = item.polygon.center.map((coords) => {
-                return new Array(parseFloat(coords[1]), parseFloat(coords[0]));
+                return new Array(parseFloat(coords[0]), parseFloat(coords[1]));
             });
             
             L.circle(points, {
